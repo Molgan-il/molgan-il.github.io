@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molgan — השותף הדמיוני של העסק שלך</title>
+    <meta name="description" content="מולגן. שירות ליווי מתמשך לעסקים קטנים. מערכת ניהול מותאמת, ליווי שוטף, וצמיחה ביחד.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#E8F4F4',
+                            100: '#D1E9E9',
+                            200: '#B5D8D8',
+                            300: '#7EC8C8',
+                            400: '#4AABAB',
+                            500: '#2A7B88',
+                            600: '#1F5F6A',
+                            700: '#164A52',
+                        },
+                        cream: {
+                            50: '#FDFCFA',
+                            100: '#F7F4EF',
+                            200: '#EDE8E0',
+                        },
+                        charcoal: '#3A3A3A',
+                    },
+                    fontFamily: {
+                        rubik: ['Rubik', 'sans-serif'],
+                        heebo: ['Heebo', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #F7F4EF;
+            color: #3A3A3A;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Rubik', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        .nav-scrolled {
+            background: rgba(247, 244, 239, 0.92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+        }
+        /* Molgan speech bubble */
+        .molgan-says {
+            position: relative;
+            display: inline-block;
+        }
+        .molgan-says::before {
+            content: '';
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #E8F4F4;
+        }
+        /* Watercolor blobs */
+        .watercolor-1 {
+            background: radial-gradient(ellipse at 25% 45%, rgba(126, 200, 200, 0.12) 0%, transparent 65%);
+        }
+        .watercolor-2 {
+            background: radial-gradient(ellipse at 75% 35%, rgba(181, 216, 216, 0.1) 0%, transparent 60%);
+        }
+        /* Molgan avatar float animation */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .molgan-float {
+            animation: gentleFloat 4s ease-in-out infinite;
+        }
+        /* Fade in on scroll */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Step connector line */
+        .step-line {
+            position: relative;
+        }
+        .step-line::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 24px;
+            width: 2px;
+            height: 32px;
+            background: linear-gradient(to bottom, #B5D8D8, transparent);
+        }
+        .step-line:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAV ========== -->
+    <nav id="navbar" class="fixed top-0 right-0 left-0 z-50 transition-all duration-300">
+        <div class="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
+            <a href="#top" class="font-rubik text-teal-500 font-bold text-xl">MOLGAN</a>
+
+            <!-- Desktop nav -->
+            <ul class="hidden lg:flex items-center gap-7 font-heebo text-sm text-charcoal/80">
+                <li><a href="#services" class="hover:text-teal-500 transition-colors">שירותים</a></li>
+                <li><a href="#how-it-works" class="hover:text-teal-500 transition-colors">ככה זה עובד</a></li>
+                <li><a href="#testimonials" class="hover:text-teal-500 transition-colors">שותפים</a></li>
+                <li><a href="#team" class="hover:text-teal-500 transition-colors">הצוות</a></li>
+            </ul>
+
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden sm:inline-block bg-teal-500 hover:bg-teal-600 text-white font-heebo font-medium text-sm px-5 py-2.5 rounded-xl transition-colors">
+                    בואו נדבר
+                </a>
+                <!-- Hamburger (mobile) -->
+                <button id="menu-toggle" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-cream-100 transition-colors" aria-label="תפריט">
+                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 z-[60] pointer-events-none">
+        <!-- Backdrop -->
+        <div id="drawer-backdrop" class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300"></div>
+        <!-- Panel (slides in from right in RTL) -->
+        <aside id="drawer-panel" class="absolute top-0 right-0 h-full w-72 max-w-[85%] bg-cream-50 shadow-xl translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-cream-200">
+                <span class="font-rubik text-teal-500 font-bold text-xl">MOLGAN</span>
+                <button id="menu-close" class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-cream-100 transition-colors" aria-label="סגור">
+                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <ul class="flex flex-col font-heebo text-lg text-charcoal py-4">
+                <li><a href="#services" data-drawer-link class="block px-6 py-3.5 hover:bg-cream-100 transition-colors">שירותים</a></li>
+                <li><a href="#how-it-works" data-drawer-link class="block px-6 py-3.5 hover:bg-cream-100 transition-colors">ככה זה עובד</a></li>
+                <li><a href="#testimonials" data-drawer-link class="block px-6 py-3.5 hover:bg-cream-100 transition-colors">שותפים</a></li>
+                <li><a href="#team" data-drawer-link class="block px-6 py-3.5 hover:bg-cream-100 transition-colors">הצוות</a></li>
+            </ul>
+            <div class="mt-auto p-5">
+                <a href="#contact" data-drawer-link class="block w-full text-center bg-teal-500 hover:bg-teal-600 text-white font-heebo font-medium px-5 py-3 rounded-xl transition-colors">
+                    בואו נדבר
+                </a>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ========== HERO — Molgan greets you ========== -->
+    <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div class="watercolor-1 absolute inset-0 pointer-events-none"></div>
+        <div class="watercolor-2 absolute inset-0 pointer-events-none"></div>
+        <div class="max-w-5xl mx-auto px-5 pt-28 pb-20 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+                <!-- Molgan avatar -->
+                <div class="molgan-float flex-shrink-0 order-1 md:order-2">
+                    <img src="assets/molgan-icon.png" alt="מולגן" class="w-48 h-48 sm:w-56 sm:h-56 drop-shadow-lg">
+                </div>
+                <!-- Speech -->
+                <div class="order-2 md:order-1 text-center md:text-right">
+                    <h1 class="font-rubik text-3xl sm:text-4xl lg:text-5xl font-bold text-teal-500 leading-tight mb-4">
+                        הי, אני מולגן.
+                    </h1>
+                    <p class="font-rubik text-2xl sm:text-3xl text-teal-500/80 font-medium mb-6">
+                        אני השותף הדמיוני של העסק שלך.
+                    </p>
+                    <p class="font-heebo text-lg text-charcoal/70 leading-relaxed mb-10 max-w-lg">
+                        אנחנו פה כדי לעזור לך לראות את העסק מבחוץ, לשפר את המוצר, ולמצוא את הדרך הבאה לצמוח. עם הכלים, המספרים, והליווי שעושים את זה אפשרי.
+                    </p>
+                    <a href="#contact" class="inline-block bg-teal-500 hover:bg-teal-600 text-white font-rubik font-semibold text-lg px-8 py-4 rounded-2xl transition-colors shadow-lg shadow-teal-500/20">
+                        ספרו לנו על העסק שלכם
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICES — "איך אנחנו יכולים לעזור" ========== -->
+    <section id="services" class="py-20 sm:py-24 bg-cream-100 relative overflow-hidden scroll-mt-20">
+        <div class="watercolor-1 absolute inset-0 pointer-events-none opacity-60"></div>
+        <div class="max-w-5xl mx-auto px-5 relative z-10">
+            <div class="flex items-center gap-3 justify-center mb-14 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">השירותים של מולגן</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <!-- Service 1: קמתי ביקורתי -->
+                <div class="bg-white rounded-2xl p-8 border border-cream-200 hover:border-teal-200 hover:shadow-lg transition-all fade-up flex flex-col">
+                    <div class="w-full flex justify-center mb-6 relative">
+                        <img src="assets/molgan-aristocrat.png" alt="מולגן מבקר" class="w-24 h-24">
+                    </div>
+                    <h3 class="font-rubik text-xl font-bold text-teal-600 mb-2 text-center">קמתי ביקורתי היום</h3>
+                    <p class="font-heebo text-sm text-teal-500/80 mb-4 text-center">דו"ח ביקורת מהעיניים של לקוח</p>
+                    <p class="font-heebo text-charcoal/70 leading-relaxed text-sm flex-grow">
+                        אנחנו צורכים את השירות שלך כלקוחות אמיתיים, ומחזירים דו"ח מלא: איך השיווק, איך השפה העסקית, איך התהליך מהרגע שפוגשים אותך ועד שהולכים הביתה. חווית שימוש, שירות לקוחות, והקשר המתמשך עם הלקוח. בקיצור — איך זה להיות לקוח שלך.
+                    </p>
+                </div>
+                <!-- Service 2: זהירות נוזל לך -->
+                <div class="bg-white rounded-2xl p-8 border border-cream-200 hover:border-teal-200 hover:shadow-lg transition-all fade-up flex flex-col">
+                    <div class="w-full flex justify-center mb-6 relative">
+                        <img src="assets/molgan-plumber.png" alt="מולגן שרברב" class="w-24 h-24">
+                    </div>
+                    <h3 class="font-rubik text-xl font-bold text-teal-600 mb-2 text-center">זהירות, נוזל לך</h3>
+                    <p class="font-heebo text-sm text-teal-500/80 mb-4 text-center">ניתוח הכנסות, הוצאות וזליגות</p>
+                    <p class="font-heebo text-charcoal/70 leading-relaxed text-sm flex-grow">
+                        אנחנו מנתחים את תהליך ההכנסות וההוצאות של העסק ומאתרים זליגות. איפה נזילת כסף, איפה השקעה שלא מחזירה את עצמה, ואיפה יש כסף על השולחן שפשוט לא מנוצל.
+                    </p>
+                </div>
+                <!-- Service 3: בונים לך -->
+                <div class="bg-white rounded-2xl p-8 border border-cream-200 hover:border-teal-200 hover:shadow-lg transition-all fade-up flex flex-col">
+                    <div class="w-full flex justify-center mb-6 relative">
+                        <img src="assets/molgan-builder.png" alt="מולגן בנאי" class="w-24 h-24">
+                    </div>
+                    <h3 class="font-rubik text-xl font-bold text-teal-600 mb-2 text-center">בונים לך</h3>
+                    <p class="font-heebo text-sm text-teal-500/80 mb-4 text-center">אפליקציה שאין שנייה לה</p>
+                    <p class="font-heebo text-charcoal/70 leading-relaxed text-sm flex-grow">
+                        על בסיס הביקורת החיצונית והניתוח הפנימי, אנחנו בונים אפליקציה שמותאמת בדיוק לעסק שלך. לא גנרית, לא מתוך תבנית. כזו שעונה על כל מה שמצאנו ומאפשרת פיצ'רים ייחודיים שרק העסק שלך צריך.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PAIN — "דברים שמולגן טוב בלתקן" ========== -->
+    <section class="py-20 sm:py-24 bg-cream-50">
+        <div class="max-w-5xl mx-auto px-5">
+            <!-- Molgan asks -->
+            <div class="flex items-center gap-3 justify-center mb-14 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">
+                    דברים שמולגן טוב בלתקן
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
+                <div class="bg-cream-100 border border-cream-200 rounded-2xl p-7 hover:shadow-md transition-shadow fade-up">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <p class="font-heebo text-charcoal leading-relaxed">בזבוז של לו"ז — תיאומים, ביטולים, ועוד תיאומים. והעבודה האמיתית עוד לא התחילה.</p>
+                </div>
+                <div class="bg-cream-100 border border-cream-200 rounded-2xl p-7 hover:shadow-md transition-shadow fade-up">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+                    </div>
+                    <p class="font-heebo text-charcoal leading-relaxed">לקוחות מרוצים שפשוט נעלמים. לא כי הם לא מרוצים. הם פשוט שכחו.</p>
+                </div>
+                <div class="bg-cream-100 border border-cream-200 rounded-2xl p-7 hover:shadow-md transition-shadow fade-up">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+                    </div>
+                    <p class="font-heebo text-charcoal leading-relaxed">משלמים על מערכת ניהול שלא באמת מבינה מה העסק שלך צריך.</p>
+                </div>
+                <div class="bg-cream-100 border border-cream-200 rounded-2xl p-7 hover:shadow-md transition-shadow fade-up">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                    </div>
+                    <p class="font-heebo text-charcoal leading-relaxed">החלטות מתחושת בטן, כי אין כלי שנותן לך תמונה אמיתית של מה קורה בעסק.</p>
+                </div>
+                <div class="bg-cream-100 border border-cream-200 rounded-2xl p-7 hover:shadow-md transition-shadow fade-up sm:col-span-2 sm:max-w-md sm:mx-auto">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>
+                    </div>
+                    <p class="font-heebo text-charcoal leading-relaxed">העסק רוצה לגדול, אבל הקפיצה הבאה פשוט לא מגיעה.</p>
+                </div>
+            </div>
+            <!-- Molgan response -->
+            <div class="flex items-center gap-3 justify-center mt-12 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <p class="font-rubik text-xl text-teal-500 font-medium">נשמע מוכר? בואו נתקן את זה.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS — Board Game ========== -->
+    <section id="how-it-works" class="py-20 sm:py-24 bg-cream-50 overflow-hidden scroll-mt-20">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="flex items-center gap-3 justify-center mb-16 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">ככה זה עובד בינינו:</h2>
+            </div>
+
+            <!-- Board game path -->
+            <div class="relative max-w-3xl mx-auto" id="board-game">
+                <!-- Dynamic connector SVG — drawn by JS -->
+                <svg class="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-0" id="board-connectors"></svg>
+
+                <!-- Step 1 — Right -->
+                <div class="flex justify-end mb-6 sm:mb-4 fade-up" data-step="1">
+                    <div class="relative bg-white rounded-3xl shadow-sm border-2 border-teal-100 p-6 sm:p-8 max-w-sm w-full hover:shadow-md transition-shadow">
+                        <div class="absolute -top-4 right-6 w-9 h-9 rounded-full bg-teal-500 flex items-center justify-center shadow-md">
+                            <span class="font-rubik text-white font-bold text-sm">1</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
+                            <h3 class="font-rubik text-xl font-bold text-teal-600">מדברים</h3>
+                        </div>
+                        <p class="font-heebo text-charcoal/75 leading-relaxed">שיחה על העסק. מה עובד, מה לא, איפה כואב. אנחנו לומדים אותך לעומק.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 — Left -->
+                <div class="flex justify-start mb-6 sm:mb-4 fade-up" data-step="2">
+                    <div class="relative bg-white rounded-3xl shadow-sm border-2 border-teal-100 p-6 sm:p-8 max-w-sm w-full hover:shadow-md transition-shadow">
+                        <div class="absolute -top-4 right-6 w-9 h-9 rounded-full bg-teal-500 flex items-center justify-center shadow-md">
+                            <span class="font-rubik text-white font-bold text-sm">2</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+                            <h3 class="font-rubik text-xl font-bold text-teal-600">בוחרים</h3>
+                        </div>
+                        <p class="font-heebo text-charcoal/75 leading-relaxed">ביחד בוחרים איך מולגן יכול לעזור. מה הכי דחוף, מה ישנה את העסק.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 — Right -->
+                <div class="flex justify-end mb-6 sm:mb-4 fade-up" data-step="3">
+                    <div class="relative bg-white rounded-3xl shadow-sm border-2 border-teal-100 p-6 sm:p-8 max-w-sm w-full hover:shadow-md transition-shadow">
+                        <div class="absolute -top-4 right-6 w-9 h-9 rounded-full bg-teal-500 flex items-center justify-center shadow-md">
+                            <span class="font-rubik text-white font-bold text-sm">3</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.384 3.169c-.585.345-1.288-.118-1.091-.783L6.2 13.652a.86.86 0 00-.253-.652L2.2 9.574c-.484-.467-.222-1.28.445-1.364l4.253-.507a.865.865 0 00.659-.473L9.677 3.56c.27-.544 1.07-.544 1.34 0l2.12 3.67a.865.865 0 00.659.473l4.253.507c.667.084.929.897.445 1.364L14.747 13a.86.86 0 00-.253.652l1.255 3.904c.197.665-.506 1.128-1.091.783L9.274 15.17a.865.865 0 00-.854 0z"/></svg>
+                            <h3 class="font-rubik text-xl font-bold text-teal-600">בונים ומשתפרים</h3>
+                        </div>
+                        <p class="font-heebo text-charcoal/75 leading-relaxed">בונים יחד, משיקים, ונשארים בקשר. תמיכה שוטפת וצ'ק-אין כל רבעון.</p>
+                    </div>
+                </div>
+
+                <!-- Finish flag -->
+                <div class="flex justify-center mt-4 fade-up">
+                    <div class="flex items-center gap-2 bg-teal-500 text-white px-5 py-2.5 rounded-full font-rubik font-medium text-sm shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/></svg>
+                        העסק שלך משודרג 🎉
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS — "שותפים מספרים עלינו" ========== -->
+    <section id="testimonials" class="py-20 sm:py-24 bg-white overflow-hidden scroll-mt-20">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="flex items-center gap-3 justify-center mb-14 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">שותפים מספרים עלינו</h2>
+            </div>
+
+            <!-- Single testimonial — נעמי (Phase 1: more testimonials added as real customers come online) -->
+            <div class="max-w-2xl mx-auto fade-up">
+                <div class="bg-cream-50 border border-cream-200 rounded-2xl p-8 text-center">
+                    <div class="w-20 h-20 rounded-full bg-cream-200 mx-auto mb-4 overflow-hidden">
+                        <img src="assets/placeholder-avatar.svg" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <h4 class="font-rubik font-semibold text-teal-600 text-lg">נעמי</h4>
+                    <p class="font-heebo text-charcoal/60 text-sm mb-4">מנהלת מובמנט ירושלים</p>
+                    <p class="font-heebo text-charcoal/80 leading-relaxed">"לראשונה בחיים נהניתי להסתכל על מספרים וטבלאות. מולגן עזרו לי לראות את העסק שלי בצלילות, ולנהל אותו בחוכמה. ממליצה בעיניים עצומות."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== VERTICALS ========== -->
+    <section class="py-20 sm:py-24 bg-cream-100">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="flex items-center gap-3 justify-center mb-14 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">אנחנו כבר עוזרים לעסקים כאלה:</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto" id="verticals-grid">
+                <div class="bg-white rounded-2xl p-7 border border-cream-200 hover:border-teal-200 hover:shadow-md transition-all fade-up">
+                    <h3 class="font-rubik text-lg font-semibold text-teal-600 mb-3">סטודיו מובמנט</h3>
+                    <p class="font-heebo text-sm text-charcoal/70 leading-relaxed">שיעורים, מנויים, מדריכים, סדנאות. סטודיו זה קהילה — והמערכת צריכה להבין את זה.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-7 border border-cream-200 hover:border-teal-200 hover:shadow-md transition-all fade-up">
+                    <h3 class="font-rubik text-lg font-semibold text-teal-600 mb-3">חוות סוסים</h3>
+                    <p class="font-heebo text-sm text-charcoal/70 leading-relaxed">רוכבים, סוסים, מדריכים, מתקנים. הכל במקום אחד. בלי פתקים ובלי להתקשר לברר מי רוכב על מי ומתי.</p>
+                </div>
+                <!-- Open card -->
+                <div class="rounded-2xl p-7 border-2 border-dashed border-teal-300/50 hover:border-teal-400 transition-all flex flex-col justify-center text-center cursor-pointer group fade-up" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center mx-auto mb-3 group-hover:bg-teal-100 transition-colors">
+                        <svg class="w-5 h-5 text-teal-400 group-hover:text-teal-500 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    </div>
+                    <h3 class="font-rubik text-lg font-semibold text-teal-400 group-hover:text-teal-500 mb-2 transition-colors">העסק שלך?</h3>
+                    <p class="font-heebo text-sm text-charcoal/50 leading-relaxed">אנחנו כל הזמן לומדים דברים חדשים. נשמח לשמוע עליו.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== NUMBERS ========== -->
+    <section class="py-20 sm:py-24 bg-teal-500 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.3), transparent 60%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.2), transparent 50%);"></div>
+        <div class="max-w-5xl mx-auto px-5 relative z-10">
+            <div class="flex items-center gap-3 justify-center mb-14">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0 brightness-0 invert">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-white">כמה מספרים ששווה לדעת:</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 max-w-4xl mx-auto text-center">
+                <div class="fade-up">
+                    <div class="font-rubik text-5xl sm:text-6xl font-bold text-white mb-3">40%</div>
+                    <p class="font-heebo text-teal-100 leading-relaxed">מהלקוחות שלך לא חוזרים. לא כי הם לא מרוצים. הם פשוט שוכחים.</p>
+                </div>
+                <div class="fade-up">
+                    <div class="font-rubik text-5xl sm:text-6xl font-bold text-white mb-3">5–8</div>
+                    <p class="font-heebo text-teal-100 leading-relaxed text-sm">שעות בשבוע הולכים על ניהול ידני. זה זמן שאנחנו יכולים לחסוך לך.</p>
+                </div>
+                <div class="fade-up">
+                    <div class="font-rubik text-5xl sm:text-6xl font-bold text-white mb-3">90%</div>
+                    <p class="font-heebo text-teal-100 leading-relaxed">פחות ביטולים כשיש תזכורות אוטומטיות. לא קסם. תזכורת בוואטסאפ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TEAM — "מי אנחנו" ========== -->
+    <section id="team" class="py-20 sm:py-24 bg-white scroll-mt-20">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="flex items-center gap-3 justify-center mb-6 fade-up">
+                <img src="assets/molgan-icon.png" alt="מולגן" class="w-10 h-10 flex-shrink-0">
+                <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500">מי אנחנו?</h2>
+            </div>
+            <p class="font-heebo text-charcoal/70 text-center max-w-2xl mx-auto mb-14 leading-relaxed fade-up">
+                זוג — גם בחיים וגם בעבודה. זה לא סטטיסטיקה, זה הבסיס של מולגן: שני אנשים שרואים את העסק שלכם מזוויות שונות ומשלימות.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <!-- Ido -->
+                <div class="bg-cream-50 border border-cream-200 rounded-3xl p-8 text-center fade-up">
+                    <div class="w-32 h-32 rounded-full mx-auto mb-5 overflow-hidden border-4 border-white shadow-md">
+                        <img src="assets/ido.jpg" alt="עידו מן" class="w-full h-full object-cover" style="object-position: center 15%;">
+                    </div>
+                    <h3 class="font-rubik text-2xl font-bold text-teal-600 mb-1">עידו מן</h3>
+                    <p class="font-heebo text-sm text-teal-500/80 mb-4">אסטרטגיה, פיתוח עסקי וצמיחה</p>
+                    <p class="font-heebo text-charcoal/75 leading-relaxed text-sm">
+                        שנים של ליווי סטארטאפים ועסקים קטנים. הצד של המספרים, התהליכים והכלים — איך העסק עובד מבפנים, ואיפה הפוטנציאל שחבוי.
+                    </p>
+                </div>
+
+                <!-- Ela -->
+                <div class="bg-cream-50 border border-cream-200 rounded-3xl p-8 text-center fade-up">
+                    <div class="w-32 h-32 rounded-full mx-auto mb-5 overflow-hidden border-4 border-white shadow-md">
+                        <img src="assets/ela.png" alt="אלה שטאל" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-rubik text-2xl font-bold text-teal-600 mb-1">אלה שטאל</h3>
+                    <p class="font-heebo text-sm text-teal-500/80 mb-4">מכירות, חוויית לקוח וקהילה</p>
+                    <p class="font-heebo text-charcoal/75 leading-relaxed text-sm">
+                        סמנכ"לית מכירות לשעבר בחברות טכנולוגיה. הצד האנושי — איך העסק מרגיש ללקוח, איך בונים קהילה, ואיך צומחים דרך אנשים, לא רק דרך גרפים.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FINAL CTA ========== -->
+    <section id="contact" class="py-20 sm:py-28 bg-cream-50 relative overflow-hidden scroll-mt-20">
+        <div class="watercolor-2 absolute inset-0 pointer-events-none"></div>
+        <div class="max-w-2xl mx-auto px-5 text-center relative z-10">
+            <!-- Molgan avatar small -->
+            <img src="assets/molgan-icon.png" alt="מולגן" class="w-20 h-20 mx-auto mb-8 molgan-float">
+            <h2 class="font-rubik text-3xl sm:text-4xl font-bold text-teal-500 mb-5">
+                נשמע טוב?
+            </h2>
+            <p class="font-heebo text-lg text-charcoal/70 leading-relaxed mb-10 max-w-md mx-auto">
+                ספרו לנו על העסק שלכם בואו נראה איך אנחנו יכולים לעזור. שיחה קצרה, בלי התחייבות, בלי לחץ. רק אנחנו.
+            </p>
+            <a href="https://calendar.app.google/2tygALibrGaCWDkX8" target="_blank" class="inline-block bg-teal-500 hover:bg-teal-600 text-white font-rubik font-semibold text-xl px-10 py-5 rounded-2xl transition-colors shadow-xl shadow-teal-500/25">
+                בואו נדבר
+            </a>
+            <p class="font-heebo text-sm text-charcoal/60 mt-10 mb-4">מעדיפים אחרת? אפשר גם דרך —</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 font-heebo text-charcoal/80">
+                <a href="mailto:ido.mann1@gmail.com" class="hover:text-teal-500 transition-colors" dir="ltr">ido.mann1@gmail.com</a>
+                <span class="text-cream-300 hidden sm:inline">·</span>
+                <a href="tel:+972526770094" class="hover:text-teal-500 transition-colors" dir="ltr">052-677-0094</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="py-8 bg-cream-200">
+        <div class="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="font-rubik text-teal-500 font-bold text-lg">MOLGAN</span>
+            <p class="font-heebo text-sm text-charcoal/40">© 2026 Molgan. כל הזכויות שמורות.</p>
+        </div>
+    </footer>
+
+    <!-- ========== MOBILE STICKY CTA ========== -->
+    <div id="mobile-cta" class="fixed bottom-0 right-0 left-0 z-40 bg-cream-100/95 backdrop-blur-md border-t border-cream-200 p-3 translate-y-full transition-transform duration-300 sm:hidden">
+        <a href="#contact" class="block bg-teal-500 hover:bg-teal-600 text-white font-rubik font-semibold text-center py-3.5 rounded-xl transition-colors">
+            בואו נדבר
+        </a>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script>
+        // Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('nav-scrolled', window.scrollY > 40);
+        });
+
+        // Mobile sticky CTA
+        const mobileCta = document.getElementById('mobile-cta');
+        const heroSection = document.querySelector('section:first-of-type');
+        const contactSection = document.getElementById('contact');
+        if (mobileCta && heroSection && contactSection) {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.target === heroSection && !e.isIntersecting) mobileCta.classList.remove('translate-y-full');
+                    if (e.target === heroSection && e.isIntersecting) mobileCta.classList.add('translate-y-full');
+                    if (e.target === contactSection && e.isIntersecting) mobileCta.classList.add('translate-y-full');
+                });
+            }, { threshold: 0.1 });
+            obs.observe(heroSection);
+            obs.observe(contactSection);
+        }
+
+        // Fade-up on scroll
+        const fadeEls = document.querySelectorAll('.fade-up');
+        const fadeObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    fadeObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        fadeEls.forEach(el => fadeObs.observe(el));
+
+        // Mobile drawer
+        (function() {
+            const drawer = document.getElementById('mobile-drawer');
+            const panel = document.getElementById('drawer-panel');
+            const backdrop = document.getElementById('drawer-backdrop');
+            const openBtn = document.getElementById('menu-toggle');
+            const closeBtn = document.getElementById('menu-close');
+            if (!drawer || !panel) return;
+
+            function open() {
+                drawer.style.pointerEvents = 'auto';
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                panel.classList.remove('translate-x-full');
+                document.body.style.overflow = 'hidden';
+            }
+            function close() {
+                backdrop.classList.add('opacity-0');
+                backdrop.classList.remove('opacity-100');
+                panel.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+                setTimeout(() => { drawer.style.pointerEvents = 'none'; }, 300);
+            }
+
+            openBtn?.addEventListener('click', open);
+            closeBtn?.addEventListener('click', close);
+            backdrop?.addEventListener('click', close);
+            document.querySelectorAll('[data-drawer-link]').forEach(a => {
+                a.addEventListener('click', close);
+            });
+        })();
+
+        // Board game connectors — draw lines between actual card positions
+        (function() {
+            const board = document.getElementById('board-game');
+            const svgEl = document.getElementById('board-connectors');
+            if (!board || !svgEl || window.innerWidth < 640) return;
+
+            function drawConnectors() {
+                const boardRect = board.getBoundingClientRect();
+                const steps = board.querySelectorAll('[data-step]');
+                if (steps.length < 2) return;
+
+                svgEl.setAttribute('viewBox', `0 0 ${boardRect.width} ${boardRect.height}`);
+                let paths = '';
+
+                for (let i = 0; i < steps.length - 1; i++) {
+                    const cardA = steps[i].querySelector('.bg-white');
+                    const cardB = steps[i + 1].querySelector('.bg-white');
+                    const rA = cardA.getBoundingClientRect();
+                    const rB = cardB.getBoundingClientRect();
+
+                    // Bottom-center of card A
+                    const ax = rA.left + rA.width / 2 - boardRect.left;
+                    const ay = rA.bottom - boardRect.top;
+                    // Top-center of card B
+                    const bx = rB.left + rB.width / 2 - boardRect.left;
+                    const by = rB.top - boardRect.top;
+
+                    // Control points for a nice S-curve
+                    const midY = (ay + by) / 2;
+                    paths += `<path d="M${ax},${ay} C${ax},${midY} ${bx},${midY} ${bx},${by}" stroke="#7DC8D2" stroke-width="2.5" stroke-dasharray="8 6" stroke-linecap="round" fill="none"/>`;
+                    paths += `<circle cx="${bx}" cy="${by}" r="4" fill="#7DC8D2"/>`;
+                }
+                svgEl.innerHTML = paths;
+            }
+
+            // Draw after layout settles
+            setTimeout(drawConnectors, 100);
+            window.addEventListener('resize', drawConnectors);
+        })();
+
+        // Testimonials carousel
+        (function() {
+            const track = document.getElementById('testimonials-track');
+            const dotsContainer = document.getElementById('testimonials-dots');
+            if (!track || !dotsContainer) return;
+
+            const slides = track.children;
+            const totalSlides = slides.length;
+            let currentIndex = 0;
+            let slidesPerView = window.innerWidth >= 640 ? 2 : 1;
+            const maxIndex = () => Math.max(0, totalSlides - slidesPerView);
+
+            const prevBtn = document.getElementById('carousel-prev');
+            const nextBtn = document.getElementById('carousel-next');
+
+            function updateArrows() {
+                const atStart = currentIndex === 0;
+                const atEnd = currentIndex >= maxIndex();
+                prevBtn.style.opacity = atStart ? '0.3' : '1';
+                prevBtn.style.cursor = atStart ? 'default' : 'pointer';
+                prevBtn.querySelector('svg').style.color = atStart ? '#C9BFB0' : '';
+                nextBtn.style.opacity = atEnd ? '0.3' : '1';
+                nextBtn.style.cursor = atEnd ? 'default' : 'pointer';
+                nextBtn.querySelector('svg').style.color = atEnd ? '#C9BFB0' : '';
+            }
+
+            function updateCarousel() {
+                const slideWidth = 100 / slidesPerView;
+                // RTL: negative translateX to scroll left (reveals next cards)
+                track.style.transform = `translateX(${-(currentIndex * slideWidth)}%)`;
+                updateDots();
+                updateArrows();
+            }
+
+            function updateDots() {
+                dotsContainer.innerHTML = '';
+                const pages = maxIndex() + 1;
+                for (let i = 0; i < pages; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = `w-2.5 h-2.5 rounded-full transition-colors ${i === currentIndex ? 'bg-teal-500' : 'bg-cream-300'}`;
+                    dot.setAttribute('aria-label', `עמוד ${i + 1}`);
+                    dot.onclick = () => { currentIndex = i; updateCarousel(); };
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            window.moveCarousel = function(dir) {
+                currentIndex = Math.max(0, Math.min(maxIndex(), currentIndex + dir));
+                updateCarousel();
+            };
+
+            window.addEventListener('resize', () => {
+                slidesPerView = window.innerWidth >= 640 ? 2 : 1;
+                currentIndex = Math.min(currentIndex, maxIndex());
+                updateCarousel();
+            });
+
+            updateCarousel();
+        })();
+    </script>
+</body>
+</html>
